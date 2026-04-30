@@ -1,6 +1,6 @@
 # 🎧 Model Card: Music Recommender System
 
-**Note:** This is an extended version of the Module 3 Music Recommender. The original system recommended songs from a CSV catalog. This version adds **reliability evaluation**: confidence scoring, bias detection, edge case handling, and structured logging.
+**Note:** This started as my Module 3 music recommender. The original version just ranked songs from a CSV file. I added reliability checks on top of that: confidence scoring, bias detection, edge case handling, and logging.
 
 ---
 
@@ -8,7 +8,7 @@
 
 ## 1. Model Name
 
-**VibeBridge 2.0** – An interactive music recommender with reliability guardrails.
+**VibeBridge 2.0** – An interactive music recommender with a few reliability checks added.
 
 **Base Project:** Music Recommender Simulation (Module 3)
 
@@ -21,7 +21,7 @@ This system recommends songs from a local catalog based on user taste profiles. 
 - **Transparency features** (explanations for each recommendation)
 - **Reliability evaluation** (confidence scores, bias detection, edge case warnings)
 
-**Design Goal:** Demonstrate how to build a recommender with guardrails, not just accuracy.
+**Design Goal:** Build something that is easy to explain and easy to test, not just something that sorts songs.
 
 ---
 
@@ -53,11 +53,11 @@ This system recommends songs from a local catalog based on user taste profiles. 
 
 ## 5. Model Strengths
 
-✅ **Transparent:** Every recommendation includes human-readable explanations  
-✅ **Evaluable:** Confidence scores and bias metrics show why results matter  
-✅ **Robust:** Edge case detection prevents contradictory recommendations  
-✅ **Reproducible:** Scoring is deterministic and rule-based  
-✅ **No API dependency:** Runs fully offline with no external calls
+✅ **Transparent:** Every recommendation includes a short explanation  
+✅ **Testable:** Confidence scores and bias metrics make it easier to check the output  
+✅ **Handles odd inputs:** Edge case detection catches contradictory preferences  
+✅ **Reproducible:** The scoring is rule-based, so it behaves the same way each run  
+✅ **No API dependency:** It runs locally without external calls
 
 ---
 
@@ -138,7 +138,7 @@ This system recommends songs from a local catalog based on user taste profiles. 
 
 **AI's suggestion:** "Use three parallel evaluation paths: (1) confidence scoring for match certainty, (2) bias detection for unfair dominance, (3) edge case detection for contradictions. Then combine into a system health score."
 
-**Why it worked:** This gave me a clean architecture to build on. I implemented each module independently, then composed them. The three-path design made the system modular and testable.
+**Why it worked:** It gave me a clean structure to build from. I implemented each part separately and then wired them together, which made the system easier to test.
 
 **My contribution:** I refined the confidence scoring algorithm to account for multi-dimensional matches and adjusted the health scoring weights based on testing.
 
@@ -151,14 +151,14 @@ This system recommends songs from a local catalog based on user taste profiles. 
 **AI suggested:** "Yes—use sentence-transformers to embed song metadata and compute cosine similarity. This would improve matching beyond just rule-based scoring."
 
 **Why it was flawed:** 
-1. Adds external dependency (defeats the "no API" goal for this timeline)
-2. Requires additional libraries and setup time (I had ~4 hours total)
-3. Embeddings are a black-box; contradicts the explainability goal
-4. Overkill for a 18-song catalog
+1. It adds an extra dependency, which did not fit the time limit.
+2. It would have taken more setup than I could justify for this project.
+3. It makes the system harder to explain.
+4. It was more complexity than I needed for an 18-song catalog.
 
 **What I did instead:** Stuck with rule-based scoring but added structured confidence annotations. Gave me both speed and transparency.
 
-**Lesson learned:** AI suggestions are valuable starting points, but context matters. Constraints (time, compute, explainability requirements) should guide whether to adopt a suggestion.
+**Lesson learned:** AI suggestions are useful starting points, but the constraints matter more. Time, setup, and explainability should decide whether a suggestion is worth using.
 
 ---
 

@@ -1,21 +1,21 @@
-# 🎵 VibeBridge: Interactive Music Recommender with Reliability Evaluation
+# VibeBridge: Interactive Music Recommender with Reliability Evaluation
 
-**Status:** Functional. See [Loom demo](#demo-video) below.
+**Status:** Working. See the demo section below for the walkthrough video.
 
 > **Base Project:** Music Recommender Simulation (Module 3)  
-> **Extended:** Added reliability evaluation system with confidence scoring, bias detection, edge case handling, and structured logging.
+> **What I added:** reliability checks for confidence, bias, edge cases, and logging.
 
 ---
 
 ## 📋 Project Summary
 
-This is an **applied AI system** that recommends music based on user taste profiles while demonstrating responsible design principles.
+This is a music recommender I built from my Module 3 project. It recommends songs from a local catalog and checks its own output so the results are easier to trust.
 
 ### Original Goal (Module 3)
 Build a content-based music recommender that scores songs against user preferences and explains each recommendation.
 
-### Extension Goal (Module 5)
-**Extend the recommender into a reliable system** that verifies its own recommendations through:
+### What I added in Module 5
+I extended the recommender with a few checks so it can explain what it is doing and catch obvious problems:
 - ✅ Confidence scoring (0–1, with reasoning)
 - ✅ Bias detection (detects genre/mood overrepresentation)
 - ✅ Edge case warnings (flags contradictory preferences)
@@ -264,7 +264,7 @@ Preferences: lofi, chill, energy=0.35, acoustic=True
 
 ### Test Summary
 
-✅ **6/6 test modules pass:**
+✅ **17/17 tests pass:**
 - Confidence scoring logic ✓
 - Bias detection accuracy ✓
 - Edge case detection ✓
@@ -296,7 +296,7 @@ pytest tests/ -v
 | Confidence scoring on 0–1 scale | Normalized scores easy to interpret | May not reflect true uncertainty |
 | Bias threshold at 60% | Flags obvious dominance; not too strict | Some legitimate cases might alert |
 | JSON logging | Human + machine readable; easy to audit | More disk I/O than binary formats |
-| No external dependencies except pandas | Simpler deployment; fits constraints | Can't use robust ML libraries |
+| No external API dependencies; lightweight local Python packages only | Simpler deployment; fits constraints | Can't use robust ML libraries |
 
 ---
 
@@ -354,8 +354,8 @@ Demo shows:
 │   └── test_evaluator.py      ← New reliability tests (6 test classes, 20+ tests)
 ├── logs/
 │   └── recommender_log.jsonl  ← Generated during runtime (audit trail)
-└── assets/
-    └── system_diagram.md       ← Architecture (Mermaid or image)
+├── assets/
+│   └── SYSTEM_ARCHITECTURE.md  ← Architecture documentation (diagram + flow)
 ```
 
 ---
