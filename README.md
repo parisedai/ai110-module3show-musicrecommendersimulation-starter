@@ -24,6 +24,12 @@ I extended the recommender with a few checks so it can explain what it is doing 
 
 ---
 
+## 📹 Demo Video
+
+**[Watch the demo](https://www.loom.com/share/decee52626eb431e8bd52f632d76c693)** - Interactive walkthrough showing confidence scoring, bias detection, edge case handling, and system health metrics.
+
+---
+
 ## 🏗️ System Architecture
 
 ```
@@ -319,22 +325,7 @@ pytest tests/ -v
 
 ---
 
-## 📹 Demo Video
-
-**[Loom Recording](#)** - *Link will be added after recording*
-
-Demo shows:
-- ✅ System running with 3 different user profiles
-- ✅ Confidence scores and bias detection in action
-- ✅ Edge case warning system catching contradictions
-- ✅ Logging & reliability metrics summary
-
-**Duration:** ~5 minutes  
-**Content:** End-to-end system run with outputs + interpretation
-
----
-
-## 📁 Project Structure
+##  Project Structure
 
 ```
 .
