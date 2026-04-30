@@ -81,13 +81,10 @@ I extended the recommender with a few checks so it can explain what it is doing 
 
 ---
 
-## 🎯 Key AI Features
+## What I Built
 
-### 1. **Confidence Scoring** (Reliability Testing)
-- Rates recommendation match strength on 0–1 scale
-- **Multi-dimension bonus:** Extra confidence if multiple attributes match
-- **Contradiction detection:** Reduces confidence for paradoxical preferences
-- **Reasoning explanation:** "🟢 High (≥0.85): multiple attribute matches"
+### Confidence Scoring
+Rates how confident the system is in each recommendation (0–1 scale). Confidence goes up when multiple aspects of the preference match, and down when preferences contradict each other. The system explains its reasoning for each score.
 
 **Example:**
 ```
@@ -96,10 +93,9 @@ Song: Upbeat Pop (pop genre, happy mood, 0.85 energy)
 Confidence: 0.90 (🟢 High) - "multiple attribute matches"
 ```
 
-### 2. **Bias Detection** (Fairness & Diversity)
-- Analyzes top-K results for genre/mood overrepresentation
-- Alert if >60% from single category
-- Returns distribution metrics for transparency
+### Bias Detection
+
+Analyzes the top recommendations to see if they're too concentrated in one genre or mood. If more than 60% are from the same category, the system alerts you. This prevents the recommender from just suggesting the same type of song over and over.
 
 **Example:**
 ```
@@ -109,10 +105,9 @@ Message: Bias Alert: pop is 80% of results
 → User might want to adjust preferences or get more diverse results
 ```
 
-### 3. **Edge Case Detection** (Preference Validation)
-- Flags contradictory preferences (e.g., high energy + sad mood)
-- Warns on extreme values (0.0–0.1 or 0.95–1.0)
-- Explains unusual combinations that might or might not be intentional
+### Edge Case Detection
+
+Catches contradictory or unusual preferences (like "high energy but sad mood") and warns before recommending. This prevents confusing outputs and makes the system more transparent about what it's doing.
 
 **Example:**
 ```
@@ -121,10 +116,9 @@ Warning: ⚠️ Unusual: High energy + sad/intense mood
          (will favor upbeat sad songs like intense rock ballads)
 ```
 
-### 4. **Structured Logging & Guardrails** (Transparency)
-- All evaluations logged to `logs/recommender_log.jsonl` (JSON Lines format)
-- Includes timestamp, event type, recommendation count, confidence scores, bias flags
-- Enables auditing and debugging
+### Logging & Guardrails
+
+Every recommendation gets logged with a timestamp and evaluation metrics. This gives me an audit trail to debug problems and verify the system is working consistently.
 
 **Example log entry:**
 ```json
@@ -351,73 +345,29 @@ pytest tests/ -v
 
 ---
 
-## 🛡️ Responsible Design & Ethics
+## What I Learned About Reliability
 
-### Limitations We Acknowledge
-1. **Small dataset:** Only 18 songs; misses many genres and languages
-2. **Genre bias:** Algorithm can collapse toward dominant genres
-3. **No learning:** Single fixed profile per recommendation; doesn't adapt
-4. **Acoustic oversimplification:** Binary threshold (≥0.6 vs. <0.6) misses nuance
+Building this system taught me that evaluation is as important as generation. I started with just a recommender and added checks so I could see when it might fail.
 
-### How We Mitigate Risk
-- ✅ **Full transparency:** Every recommendation includes score, confidence, reasoning
-- ✅ **Bias alerts:** System warns when >60% from one genre
-- ✅ **Edge case detection:** Flags contradictions before recommending
-- ✅ **Logging:** Audit trail for every recommendation enables accountability
+**Known limitations:**
+- Small dataset (18 songs) means less diversity than real music apps
+- Genre weights can dominate results if not tuned carefully
+- No learning from user feedback; preferences are fixed per run
+- Acoustic preference is too simple (binary on/off)
 
-### Ethical Principles
-- No hidden ranking manipulation
-- Explainability by default
-- User preferences respected (not overridden by business logic)
-- Guardrails prevent edge case failures
+**How I mitigate these issues:**
+- Show confidence scores and reasoning for every recommendation
+- Warn when >60% of results are from one genre
+- Flag contradictory preferences up front
+- Log everything for debugging and accountability
 
 ---
 
-## 🔮 Future Enhancements
+## What This Means for Future Projects
 
-- **Diversity constraint:** Reshuffle top-5 if >2 from same artist
-- **Feedback loop:** Rate recommendations → adjust weights
-- **Expanded catalog:** >100 songs with better genre/language balance
-- **Temporal analysis:** Seasonal music trends
-- **Benchmark comparison:** vs. random baseline + popularity
+If I build another recommender, I'd add user feedback so the system learns from ratings. I'd also expand the song catalog and test different confidence thresholds to find the right balance between safety and usability.
 
----
-
-## 👤 Author Notes
-
-This project evolved from a simple content-based recommender into a system demonstrating **both capability and responsibility**. The key insight: evaluating your own recommendations (confidence, bias, edge cases) matters as much as generating them.
-
-**For potential employers:** This code shows I can:
-- Build modular, testable systems
-- Add reliability/guardrails to AI pipelines
-- Balance transparency with functionality
-- Work within constraints (time, compute, API access)
-- Document clearly with examples
-
----
-
-## 📝 License
-
-Educational use. See original Module 3 project for details.
-
----
-
-## Evaluation Runs
-
-Profiles tested in CLI:
-
-- High-Energy Pop
-- Chill Lofi
-- Deep Intense Rock
-- Edge Case: High Energy + Sad
-
-Experiment tested:
-
-- Weight shift: lower genre influence and increase energy influence
-
-How to capture evidence for submission:
-
-- Run `python -m src.main`
+The biggest lesson: transparency beats complexity. Showing why a recommendation was made, even if the system is wrong, is better than hiding the logic.
 - Take terminal screenshots for each profile section
 - Add the screenshots under this README section
 
