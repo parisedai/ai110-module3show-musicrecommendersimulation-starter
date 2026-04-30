@@ -1,24 +1,34 @@
 """
-Command line runner for the Music Recommender Simulation.
+Command line runner for the Music Recommender Simulation with Reliability Evaluation.
 
-This file helps you quickly run and test your recommender.
+This system combines:
+1. Content-based music recommendations
+2. Confidence scoring
+3. Bias detection
+4. Edge case handling
+5. Structured logging and guardrails
 
-You will implement the functions in recommender.py:
-- load_songs
-- score_song
-- recommend_songs
+Run modes:
+- python -m src.main: Shows both basic and evaluated recommendations
+- python -m src.main --mode basic: Just the original recommender
+- python -m src.main --mode evaluated: Full evaluation with metrics
+- python -m src.main --mode interactive: Interactive preference input
 """
 
+import sys
+import argparse
 from typing import Dict
 
 try:
     from .recommender import load_songs, recommend_songs
+    from .interactive_system import InteractiveRecommenderSystem
 except ImportError:
     from recommender import load_songs, recommend_songs
+    from interactive_system import InteractiveRecommenderSystem
 
 
 def print_profile_results(profile_name: str, user_prefs: Dict, songs: list, k: int = 5) -> None:
-    """Print ranked recommendations and reasons for one profile."""
+    """Print ranked recommendations and reasons for one profile (basic mode)."""
     recommendations = recommend_songs(user_prefs, songs, k=k)
 
     print(f"\n=== {profile_name} ===")
@@ -28,9 +38,13 @@ def print_profile_results(profile_name: str, user_prefs: Dict, songs: list, k: i
         print(f"   reasons: {explanation}")
 
 
-def main() -> None:
+def main_basic() -> None:
+    """Original basic recommendation mode."""
     songs = load_songs("data/songs.csv")
-    print(f"Loaded songs: {len(songs)}")
+    print(f"\nLoaded {len(songs)} songs")
+    print("\n" + "="*80)
+    print("🎵 BASIC MUSIC RECOMMENDER (Original Mode)")
+    print("="*80)
 
     profiles = {
         "High-Energy Pop": {
@@ -57,37 +71,78 @@ def main() -> None:
             "danceability": 0.6,
             "likes_acoustic": False,
         },
-        "Edge Case: High Energy + Sad": {
-            "genre": "pop",
-            "mood": "sad",
-            "energy": 0.9,
-            "valence": 0.2,
-            "danceability": 0.7,
-            "likes_acoustic": False,
-        },
     }
 
     for profile_name, prefs in profiles.items():
         print_profile_results(profile_name, prefs, songs, k=5)
 
-    # Small data experiment: reduce genre impact and increase energy impact.
-    experiment_profile = {
-        "genre": "pop",
-        "mood": "happy",
-        "energy": 0.85,
-        "valence": 0.8,
-        "danceability": 0.8,
-        "likes_acoustic": False,
-        "weights": {
-            "genre": 1.0,
-            "mood": 1.0,
-            "energy": 4.0,
-            "valence": 1.0,
-            "danceability": 1.0,
-            "acoustic": 0.75,
+
+def main_evaluated() -> None:
+    """Full evaluation mode with confidence, bias, edge cases."""
+    system = InteractiveRecommenderSystem()
+    
+    profiles = {
+        "High-Energy Pop Lover": {
+            "genre": "pop",
+            "mood": "happy",
+            "energy": 0.85,
+            "valence": 0.8,
+            "danceability": 0.8,
+            "likes_acoustic": False,
+        },
+        "Chill Lofi Vibe": {
+            "genre": "lofi",
+            "mood": "chill",
+            "energy": 0.35,
+            "valence": 0.55,
+            "danceability": 0.5,
+            "likes_acoustic": True,
+        },
+        "Edge Case: Upbeat Sadness": {
+            "genre": "pop",
+            "mood": "sad",
+            "energy": 0.85,
+            "valence": 0.25,
+            "danceability": 0.65,
+            "likes_acoustic": False,
         },
     }
-    print_profile_results("Experiment: Energy-Heavy Weights", experiment_profile, songs, k=5)
+
+    for profile_name, prefs in profiles.items():
+        evaluation = system.recommend_with_evaluation(prefs, k=5)
+        system.print_evaluation_report(evaluation, profile_name)
+
+
+def main_interactive() -> None:
+    """Interactive mode for user input."""
+    from interactive_system import run_interactive_mode
+    run_interactive_mode()
+
+
+def main() -> None:
+    """Main entry point with argument parsing."""
+    parser = argparse.ArgumentParser(
+        description="Music Recommender with Reliability Evaluation"
+    )
+    parser.add_argument(
+        "--mode",
+        choices=["basic", "evaluated", "interactive", "full"],
+        default="full",
+        help="Execution mode: 'basic' (original), 'evaluated' (with metrics), 'interactive' (user input), 'full' (both)"
+    )
+
+    args = parser.parse_args()
+
+    if args.mode == "basic":
+        main_basic()
+    elif args.mode == "evaluated":
+        main_evaluated()
+    elif args.mode == "interactive":
+        main_interactive()
+    else:  # mode == "full"
+        main_basic()
+        print("\n" + "="*80 + "\n")
+        main_evaluated()
 
 
 if __name__ == "__main__":
